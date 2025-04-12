@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mcp-server-template": {
+      "command": "node",
+      "args": ["/Users/timvanlerberg/Desktop/mcp-server-template/build/index.js"]
+    }
+  }
+}
