@@ -2,11 +2,23 @@ import client from './client/MCPClient.js'
 import { Context, Hono } from 'hono'
 import { serve } from '@hono/node-server'
 import { sleep } from '@anthropic-ai/sdk/core.mjs'
+import { cors } from 'hono/cors'
 
 const X_API_KEY = process.env.X_API_KEY
 if (!X_API_KEY) throw new Error('X_API_KEY is not set')
 
 const app = new Hono()
+
+app.use(
+  '*',
+  cors({
+    origin: '*',
+    allowMethods: ['GET', 'POST', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'X-API-Key'],
+    exposeHeaders: [],
+    maxAge: 86400,
+  })
+)
 
 const apiKeyMiddleware = async (c: Context, next: () => Promise<void>) => {
   const apiKey: string | undefined = c.req.header('X-API-Key')
@@ -48,7 +60,7 @@ const port = 3000
 
 async function main() {
   await client.connectToServers()
-  const server = serve(
+  serve(
     {
       fetch: app.fetch,
       port: port,
