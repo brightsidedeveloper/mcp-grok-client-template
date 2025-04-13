@@ -3,13 +3,15 @@ import { Context, Hono } from 'hono'
 import { serve } from '@hono/node-server'
 import { sleep } from '@anthropic-ai/sdk/core.mjs'
 
+const X_API_KEY = process.env.X_API_KEY
+if (!X_API_KEY) throw new Error('X_API_KEY is not set')
+
 const app = new Hono()
 
 const apiKeyMiddleware = async (c: Context, next: () => Promise<void>) => {
   const apiKey: string | undefined = c.req.header('X-API-Key')
-  const validApiKey = 'tim'
 
-  if (!apiKey || apiKey !== validApiKey) {
+  if (!apiKey || apiKey !== X_API_KEY) {
     return c.json(
       {
         error: 'Unauthorized',
